@@ -1,0 +1,77 @@
+{% load mathfilters %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }}{% else %}CPICA - FMS{% endif %}</title>
+    <link rel="stylesheet" href="/static/css/all.css">
+    <link rel="stylesheet" href="/static/css/tailwind.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/mdb.min.css">
+    <link rel="stylesheet" href="/static/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="/static/css/app.css">
+    <link rel="stylesheet" href="/static/css/custom.css">
+</head>
+
+<body>
+    <nav class="flex items-center justify-between flex-wrap bg-teal-500 p-3 bg-primary">
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+            <span class="font-semibold text-xl tracking-tight">FEEDBACK MANAGEMENT - CPICA</span>
+        </div>
+        {% if request.session.session.id %}
+
+        <div class="">
+            <a class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{{ request.session.session.fullName }}</a>
+            <a href="/logout/" class="bg-red-900 btn-sm text-white focus:outline-none focus:shadow-outline btn-danger" type="submit">
+                Logout
+            </a>
+        </div>
+        {% endif %}
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            {% if request.session.session.id %}
+            <div class="col-md-2 p-0">
+                {% if request.session.session.role == 'a' %}
+                <div class="cpi sidebar shadow-lg">
+                    <a href="/"><i class="fa fa-school"></i>Dashboard</a>
+                    <a href="/subject/"><i class="fa fa-book"></i>Subjects</a>
+                    <a href="/course/"><i class="fa fa-book-open"></i>Courses</a>
+                    <a href="/viewuser/"><i class="fa fa-user"></i>Users</a>
+                    <a href="/faculty_subject/"><i class="fa fa-chalkboard-teacher"></i>Faculty Subject</a>
+                    <a href="/course_subject/"><i class="fa fa-book-reader"></i>Course Subject</a>
+                    <a href="/feedback_qus/"><i class="fa fa-comments"></i>Feedback Qus</a>
+                </div>
+                {% elif request.session.session.role == 'f' %}
+                <div class="cpi sidebar shadow-lg">
+                    <a href="/"><i class="fa fa-school"></i>Dashboard</a>
+                    <!--  Faculty Only Add User for his/her courses -->
+                    <a href="/adduser/"><i class="fa fa-user"></i>Add User</a>
+                </div>
+                {% else %}
+                <div class="cpi sidebar shadow-lg">
+                    <a href="/"><i class="fa fa-school"></i>Dashboard</a>
+                    <a href="/give_feedback/"><i class="fa fa-user"></i>Give Feedback</a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            <div class="{% if request.session.session.id %}col-md-10{% else %}col-md-12{% endif %}">
+                {% block content %} {% endblock %}
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/popper.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/js/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript" src="/static/js/mdb.min.js"></script>
+<script type="text/javascript" src="/static/js/main.js"></script>
+
+</html>

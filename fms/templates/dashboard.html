@@ -1,0 +1,45 @@
+{% extends 'index.html' %} {% load mathfilters %} {% block content %} {% csrf_token %}
+<div class="row mb-3">
+    {% for course,student_count in count.items %}
+    <div class="col-xl-3 col-sm-6 py-2">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body bg-info">
+                <div class="rotate">
+                    <i class="fa fa-user fa-4x"></i>
+                </div>
+                <h6 class="text-uppercase font-weight-bold" style="font-size: 1.2rem;">{{course}}</h6>
+                <h1 class="display-4">{{student_count}}</h1>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="row justify-start">
+    <div class="col-md-12">
+        <table class="table-fixed border" id="datatable">
+            <thead>
+                <tr>
+                    <th class="w-1/2 px-4 py-2 font-weight-bold">Course</th>
+                    <th class="w-1/2 px-4 py-2 font-weight-bold">Semster</th>
+                    <th class="w-1/4 px-4 py-2 font-weight-bold">Subject</th>
+                    <th class="w-1/4 px-4 py-2 font-weight-bold">Student</th>
+                    <th class="w-1/4 px-4 py-2 font-weight-bold">Positive</th>
+                    <th class="w-1/4 px-4 py-2 font-weight-bold">Negative</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course,subject in feedback.items %} {% for sub,data in subject.items %}
+                <tr>
+                    <td class="border px-4 py-2">{{ course }}</td>
+                    <td class="border px-4 py-2">{{ data.semester }}</td>
+                    <td class="border px-4 py-2">{{ sub }}</td>
+                    <td class="border px-4 py-2">{{ data.counter }}</td>
+                    <td class="border px-4 py-2 bg-info text-white font-weight-bold">{{ data.rating }} %</td>
+                    <td class="border px-4 py-2 bg-danger text-white font-weight-bold">{{ 100|sub:data.rating }} %</td>
+                </tr>
+                {% endfor %} {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

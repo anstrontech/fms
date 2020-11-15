@@ -1,0 +1,98 @@
+{% extends 'index.html' %}{% block content %}
+<form method="post" action="/faculty_subject/" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
+    {% csrf_token %} {% if message %}
+    <div class="bg-red-100 border border-red-400 text-red-700 px-2 py-2 mb-4 rounded relative" role="alert">
+        <strong class="font-bold">{{ message }}</strong>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="mb-6">
+                <label class="block text-blue-900 text-sm font-bold mb-2" for="faculty">
+                   Faculty
+                </label>
+                <select class="browser-default custom-select" id="faculty" name="faculty" multiple>
+                    {% for faculty_ in faculty %}
+                        <option value="{{faculty_.userid}}">{{faculty_.fullName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-6">
+                <label class="block text-blue-900 text-sm font-bold mb-2" for="course">
+                   Courses
+                </label>
+                <select class="browser-default custom-select" id="course" name="course">
+                    {% for course_ in course %}
+                        <option value="{{course_.courseID}}">{{course_.courseName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-6">
+                <label class="block text-blue-900 text-sm font-bold mb-2" for="semester">
+                   Semester
+                </label>
+                <select class="browser-default custom-select" id="semester" name="semester">
+                    {% for k,v in semester.items %}
+                        <option value="{{k}}">{{v}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-6">
+                <label class="block text-blue-900 text-sm font-bold mb-2" for="subjects">
+                   Subjects
+                </label>
+                <select class="browser-default custom-select" id="subjects" name="subjects" multiple>
+                    {% for subject_ in subject %}
+                        <option value="{{subject_.subjectID}}">{{subject_.subjectName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-12 ">
+            <div class="flex items-center justify-end">
+                <button class="bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                    ADD
+                </button>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="mt-4 flex justify-center text-center">
+                <table class="table-fixed border w-full">
+                    <thead>
+                        <tr>
+                            <th class="w-1/6 px-4 py-2 font-weight-bold">#ID</th>
+                            <th class="w-1/6 px-4 py-2 font-weight-bold">Faculty</th>
+                            <th class="w-1/4 px-4 py-2 font-weight-bold">Course</th>
+                            <th class="w-1/4 px-4 py-2 font-weight-bold">Semester</th>
+                            <th class="w-1/4 px-4 py-2 font-weight-bold">Subject</th>
+                            <th class="w-1/4 px-4 py-2 font-weight-bold">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f_s in faculty_subject %}
+                        <tr>
+                            <td class="border px-4 py-2">{{ forloop.counter }}</td>
+                            <td class="border px-4 py-2">{{ f_s.faculty }}</td>
+                            <td class="border px-4 py-2">{{ f_s.course }}</td>
+                            <td class="border px-4 py-2">{{ f_s.semester }}</td>
+                            <td class="border px-4 py-2 text-break">{{ f_s.subjectName }}</td>
+                            <td class="border px-4 py-2 text-center">
+                                <a class="bg-blue-900 hover:bg-blue-700 btn-sm text-white font-bold rounded-0 mr-1 focus:outline-none focus:shadow-outline"><i class="fa fa-edit"></i></a>
+                                <a class="bg-red-900 hover:bg-red-700 btn-sm text-white font-bold rounded-0 mr-1 focus:outline-none focus:shadow-outline"><i class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

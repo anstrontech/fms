@@ -1,0 +1,41 @@
+{% extends 'index.html' %}{% block content %}
+<form method="post" action="/give_feedback/" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
+    {% csrf_token %}
+    <input type="hidden" id="csrf_toek" value="{{ csrf_token }}" />
+    <input type="hidden" name="studentid" value="{{ request.session.session.userid }}">
+    <input type="hidden" name="courseid" value="{{ request.session.session.course }}">
+    <input type="hidden" name="semester" value="{{ request.session.session.semester }}">
+    <div class="row justify-center">
+        <div class="col-md-6">
+            <div class="mb-6">
+                <label class="block text-blue-900 text-sm font-bold mb-2" for="faculty">
+                   Faculty
+                </label>
+                <select class="browser-default custom-select" id="faculty_select" data-course="{{ request.session.session.course }}" data-semester="{{ request.session.session.semester }}" name="faculty">
+                    <option value="">Choose Faculty</option>
+                    {% for u_r in faculty %}
+                        <option value="{{ u_r.userid }}">{{ u_r.fullName }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-6">
+                <label class="block text-blue-900 text-sm font-bold mb-2" for="subjects">
+                   Subjects
+                </label>
+                <select class="browser-default custom-select" id="faculty_subjects" name="subjects">
+                    <option value="">Choose Subjects</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-12 ">
+            <div class="flex items-center justify-end">
+                <button class="bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                    GIVE FEEDBACK
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

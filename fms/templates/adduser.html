@@ -1,0 +1,103 @@
+{% extends 'index.html' %}{% block content %}
+
+<div class="container-fluid">
+    <div class="pt-10">
+        <form method="post" action="/adduser/" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            {% csrf_token %} {% if message %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-2 py-2 mb-4 rounded relative" role="alert">
+                <strong class="font-bold">{{ message }}</strong>
+            </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-4">
+                        <label class="block text-blue-900 text-sm font-bold mb-2" for="enrollno">
+                            Enrollment No
+                        </label>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-blue-900 leading-tight focus:outline-none focus:shadow-outline" id="enrollno" type="text" name="enrollno" placeholder="Enrollment No">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-6">
+                        <label class="block text-blue-900 text-sm font-bold mb-2" for="full_name">
+                            Full Name
+                        </label>
+                        <input class="shadow appearance-none border  rounded w-full py-2 px-3 text-blue-900 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="full_name" type="text" name="full_nmae" placeholder="Full Name">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-6">
+                        <label class="block text-blue-900 text-sm font-bold mb-2" for="email">
+                           Email
+                        </label>
+                        <input class="shadow appearance-none border  rounded w-full py-2 px-3 text-blue-900 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" name="email" placeholder="Email">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-6">
+                        <label class="block text-blue-900 text-sm font-bold mb-2" for="phone">
+                           Contact
+                        </label>
+                        <input class="shadow appearance-none border  rounded w-full py-2 px-3 text-blue-900 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="phone" type="text" name="phone" placeholder="Phone">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-6">
+                        <label class="block text-blue-900 text-sm font-bold mb-2" for="course">
+                           Course
+                        </label>
+                        <select class="browser-default custom-select" id="course" name="course" multiple>
+                            <option selected value="">--Course--</option>
+                            {% for k,v in courses.items %}
+                                <option value="{{k}}">{{v}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-6">
+                        <label class="block text-blue-900 text-sm font-bold mb-2" for="semester">
+                           Semester
+                        </label>
+                        <select class="browser-default custom-select" id="semester" name="semester">
+                            <option selected value="">--Semester--</option>
+                            {% for k,v in semesters.items %}
+                                <option value="{{k}}">{{v}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-6">
+                        <label class="block text-blue-900 text-sm font-bold mb-2" for="role">
+                           Role
+                        </label>
+                        <select class="browser-default custom-select" id="role" name="role">
+                            <option selected value="">--Role--</option>
+                            {% if request.session.session.role == 'a' %}
+                                {% for k,v in role.items %}
+                                    <option value="{{k}}">{{v}}</option>
+                                {% endfor %}
+                            {% elif request.session.session.role == 'f' %}
+                                <option value="s">Student</option>
+                            {% endif %}
+                            
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="flex items-center justify-end">
+                        <button class="bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                            <i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;ADD USER 
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <p class="text-center text-gray-500 text-xs">
+            &copy;2020 codexsite. All rights reserved.
+        </p>
+    </div>
+</div>
+{% endblock %}

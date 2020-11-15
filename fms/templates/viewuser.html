@@ -1,0 +1,54 @@
+{% extends 'index.html' %}{% block content %}
+
+<div class="container-fluid">
+    <div class="pt-4">
+        <div class="flex items-left justify-start">
+            <a href="/adduser/" class="bg-blue-900 hover:bg-blue-700 btn-sm text-white font-bold rounded focus:outline-none focus:shadow-outline" type="submit">
+                <i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;ADD USER
+            </a>
+        </div>
+        <div class="mt-2">
+            <form method="post" action="/adduser/" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                {% csrf_token %}
+                <table class="table-fixed border" id="datatable">
+                    <thead>
+                        <tr>
+                            <th class="w-1/2 px-4 py-2 font-weight-bold">EnrollNo</th>
+                            <th class="w-1/4 px-4 py-2 font-weight-bold">FullName</th>
+                            <th class="w-1/4 px-4 py-2 font-weight-bold">EmailID</th>
+                            <th class="w-1/4 px-4 py-2 font-weight-bold">Contact</th>
+                            <th class="w-1/4 px-4 py-2 font-weight-bold">Role</th>
+                            <th class="w-1/4 px-4 py-2 font-weight-bold">Course</th>
+                            <th class="w-1/4 px-4 py-2 font-weight-bold">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u_r in users %}
+                        <tr>
+                            <td class="border px-4 py-2">{{ u_r.enrollNo }}</td>
+                            <td class="border px-4 py-2">{{ u_r.fullName }}</td>
+                            <td class="border px-4 py-2">{{ u_r.emailID }}</td>
+                            <td class="border px-4 py-2">{{ u_r.contact }}</td>
+                            <td class="border px-4 py-2">
+                                {% if u_r.role == 'f' %} Faculty {% elif u_r.role == 'a' %} Admin {% else %} Student {% endif %}
+                            </td>
+                            <td class="border px-4 py-2">{{ u_r.course }}</td>
+                            <td class="border px-4 py-2 flex text-center">
+
+                                <a class="bg-blue-900 hover:bg-blue-700 btn-sm text-white font-bold rounded-0 mr-1 focus:outline-none focus:shadow-outline"><i class="fa fa-edit"></i></a>
+                                <a class="bg-red-900 hover:bg-red-700 btn-sm text-white font-bold rounded-0 mr-1 focus:outline-none focus:shadow-outline"><i class="fa fa-trash"></i></a>
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}

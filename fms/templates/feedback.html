@@ -1,0 +1,32 @@
+{% extends 'index.html' %}{% block content %}
+<form method="post" action="/feedback/?setid={{ request.GET.setid }}&u={{request.GET.u}}&s={{request.GET.s}}" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
+    {% csrf_token %}
+    <div class="container">
+        <div class="row justify-center">
+            <div class="col-md-3 p-0">
+                <span class="inline-block bg-gray-200 px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                    {{name}}
+                </span>
+                <span class="inline-block bg-gray-200 px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                    {{subject}}
+                </span>
+            </div>
+            <div class="col-md-12">
+                {% for q_s in question %}
+                <div id="{{ q_s.questionid }}">{{ q_s.question }}</div>
+                <div id="{{ q_s.questionid }}">
+                    {% for i in '12345'|make_list %}
+                    <input type="radio" name="{{ q_s.questionid }}-fbm" value="{{ forloop.counter }}"> {{ forloop.counter }}{% endfor %} {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="flex items-center py-2">
+                    <button class="bg-blue-900 hover:bg-blue-700 btn-sm text-white font-bold rounded focus:outline-none focus:shadow-outline" type="submit">
+                        ADD 
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

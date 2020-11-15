@@ -1,0 +1,34 @@
+{% extends 'index.html' %} {% block content %}
+
+<div class="container">
+    <div class="w-full max-w-xs m-auto mt-10 pt-10">
+        <form method="post" action="/login/" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            {% csrf_token %} {% if message %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-2 py-2 mb-4 rounded relative" role="alert">
+                <strong class="font-bold">{{ message }}</strong>
+            </div>
+            {% endif %}
+            <div class="mb-4">
+                <label class="block text-blue-900 text-sm font-bold mb-2" for="enrollno">
+                    Enrollment No
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-blue-900 leading-tight focus:outline-none focus:shadow-outline" id="enrollno" type="text" name="username" placeholder="Enrollment No">
+            </div>
+            <div class="mb-6">
+                <label class="block text-blue-900 text-sm font-bold mb-2" for="password">
+                    Password
+                </label>
+                <input class="shadow appearance-none border  rounded w-full py-2 px-3 text-blue-900 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" name="password" placeholder="*******">
+            </div>
+            <div class="flex items-center justify-between">
+                <button class="bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                    Sign In
+                </button>
+            </div>
+        </form>
+        <p class="text-center text-gray-500 text-xs">
+            &copy;2020 codexsite. All rights reserved.
+        </p>
+    </div>
+</div>
+{% endblock %}
