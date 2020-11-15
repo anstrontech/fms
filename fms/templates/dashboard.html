@@ -19,6 +19,9 @@
         <table class="table-fixed border" id="datatable">
             <thead>
                 <tr>
+                    {% if request.session.session.role == "a" %}
+                    <th class="w-1/2 px-4 py-2 font-weight-bold">Faculty</th>
+                    {% endif %}
                     <th class="w-1/2 px-4 py-2 font-weight-bold">Course</th>
                     <th class="w-1/2 px-4 py-2 font-weight-bold">Semster</th>
                     <th class="w-1/4 px-4 py-2 font-weight-bold">Subject</th>
@@ -30,6 +33,9 @@
             <tbody>
                 {% for course,subject in feedback.items %} {% for sub,data in subject.items %}
                 <tr>
+                    {% if request.session.session.role == "a" %}
+                    <td class="border px-4 py-2"><a href="/viewreport/?faculty={{ data.facultyid }}&subject={{data.subjectid}}">{{ data.faculty }} </a></td>
+                    {% endif %}
                     <td class="border px-4 py-2">{{ course }}</td>
                     <td class="border px-4 py-2">{{ data.semester }}</td>
                     <td class="border px-4 py-2">{{ sub }}</td>

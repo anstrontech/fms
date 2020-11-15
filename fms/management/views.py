@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 import re
 from management.models import User, Course, Subject, Faculty_subject, Course_subject, Question, Feedback_reply
 
-from management.functions import setTosession, roleType, semester, fetchAllCourse, fetchAllSubject, valiDateUser,enroll
+from management.functions import setTosession, roleType, semester, fetchAllCourse, fetchAllSubject, valiDateUser, enroll
 from django.core import serializers
 import math
 
@@ -42,6 +42,77 @@ def login(request):
 # View Add User
 
 
+def viewreportfaculty(request):
+
+    subject = request.GET['subject']
+    faculty = request.GET['faculty']
+
+    faculty_info = Feedback_reply.objects.filter(
+        facultyid=faculty, subjectid=subject)
+    faculty__info = []
+    for faculty in faculty_info:
+        info_dict = faculty.__dict__
+
+        faculty_name = User.objects.filter(
+            userid=info_dict['facultyid'])[0].__dict__
+        info_dict['facultyid_'] = faculty_name['fullName']
+
+        student_name = User.objects.filter(
+            userid=info_dict['studentid'])[0].__dict__
+        info_dict['studentid'] = student_name['fullName']
+
+        subject_name = Subject.objects.filter(
+            subjectID=info_dict['subjectid'])[0].__dict__
+        info_dict['subjectid_'] = subject_name['subjectName']
+
+        course_name = Course.objects.filter(
+            courseID=info_dict['courseid'])[0].__dict__
+        info_dict['courseid'] = course_name['courseName']
+        info_dict['rating'] = round(float(info_dict['rating']),2)
+
+        faculty__info.append(info_dict)
+
+    feedback = {}
+    counter = {}
+    for operation in faculty__info:
+        counter[operation['subjectid_']] = Feedback_reply.objects.filter(
+            subjectid=operation['subjectid']).count()
+        try:
+            if (operation['courseid'] not in feedback):
+                feedback[operation['courseid']] = {}
+            if (operation['subjectid_'] not in feedback[operation['courseid']]):
+                feedback[operation['courseid']
+                            ][operation['subjectid_']] = {}
+
+            if ("rating" not in feedback[operation['courseid']][operation['subjectid_']]):
+                feedback[operation['courseid']
+                            ][operation['subjectid_']]['rating'] = 0
+
+            feedback[operation['courseid']][operation['subjectid_']
+                                            ]['rating'] += float(operation['rating'])
+            feedback[operation['courseid']][operation['subjectid_']
+                                            ]['semester'] = operation['semester']
+            feedback[operation['courseid']][operation['subjectid_']
+                                            ]['faculty'] = operation['facultyid_']
+            feedback[operation['courseid']][operation['subjectid_']
+                                            ]['subjectid'] = operation['subjectid']
+            feedback[operation['courseid']][operation['subjectid_']
+                                            ]['facultyid'] = operation['facultyid']
+            feedback[operation['courseid']][operation['subjectid_']
+                                            ]['counter'] = counter[operation['subjectid_']]
+        except:
+            pass
+        
+    rattin = {}
+    for course, subjectdict in feedback.items():
+        for subject, data in subjectdict.items():
+            rattin['rating'] = round(
+                (data['rating']/data['counter'])*100,2)
+
+    print(rattin)
+    return render(request, 'viewreport.html', {'faculty':faculty__info,'average':rattin})
+
+
 def dashboardData(**kwargs):
 
     if(kwargs['role'] == "a"):
@@ -49,10 +120,70 @@ def dashboardData(**kwargs):
         courses_ = Course.objects.all()
         for course in courses_:
             cr_dit = course.__dict__
-            count[cr_dit['courseName']] = User.objects.filter(course=cr_dit['courseID'], role="s").count()
+            count[cr_dit['courseName']] = User.objects.filter(
+                course=cr_dit['courseID'], role="s").count()
 
-        
-        return {"count" : count}
+        faculty_info = Feedback_reply.objects.all()
+        faculty__info = []
+        for faculty in faculty_info:
+            info_dict = faculty.__dict__
+
+            faculty_name = User.objects.filter(
+                userid=info_dict['facultyid'])[0].__dict__
+            info_dict['facultyid_'] = faculty_name['fullName']
+
+            student_name = User.objects.filter(
+                userid=info_dict['studentid'])[0].__dict__
+            info_dict['studentid'] = student_name['fullName']
+
+            subject_name = Subject.objects.filter(
+                subjectID=info_dict['subjectid'])[0].__dict__
+            info_dict['subjectid_'] = subject_name['subjectName']
+
+            course_name = Course.objects.filter(
+                courseID=info_dict['courseid'])[0].__dict__
+            info_dict['courseid'] = course_name['courseName']
+
+            faculty__info.append(info_dict)
+
+        feedback = {}
+        counter = {}
+        for operation in faculty__info:
+            counter[operation['subjectid_']] = Feedback_reply.objects.filter(
+                subjectid=operation['subjectid']).count()
+            try:
+                if (operation['courseid'] not in feedback):
+                    feedback[operation['courseid']] = {}
+                if (operation['subjectid_'] not in feedback[operation['courseid']]):
+                    feedback[operation['courseid']
+                             ][operation['subjectid_']] = {}
+
+                if ("rating" not in feedback[operation['courseid']][operation['subjectid_']]):
+                    feedback[operation['courseid']
+                             ][operation['subjectid_']]['rating'] = 0
+
+                feedback[operation['courseid']][operation['subjectid_']
+                                                ]['rating'] += float(operation['rating'])
+                feedback[operation['courseid']][operation['subjectid_']
+                                                ]['semester'] = operation['semester']
+                feedback[operation['courseid']][operation['subjectid_']
+                                                ]['faculty'] = operation['facultyid_']
+                feedback[operation['courseid']][operation['subjectid_']
+                                                ]['subjectid'] = operation['subjectid']
+                feedback[operation['courseid']][operation['subjectid_']
+                                                ]['facultyid'] = operation['facultyid']
+                feedback[operation['courseid']][operation['subjectid_']
+                                                ]['counter'] = counter[operation['subjectid_']]
+            except:
+                pass
+
+        for course, subjectdict in feedback.items():
+            for subject, data in subjectdict.items():
+                feedback[course][subject]['rating'] = round(
+                    (data['rating']/data['counter'])*100,2)
+
+        print(feedback)
+        return {"count": count, "feedback": feedback}
 
     elif(kwargs['role'] == "f"):
         pattern = "[0-9]"
@@ -73,6 +204,10 @@ def dashboardData(**kwargs):
                 userid=info_dict['facultyid'])[0].__dict__
             info_dict['facultyid'] = faculty_name['fullName']
 
+            student_name = User.objects.filter(
+                userid=info_dict['studentid'])[0].__dict__
+            info_dict['studentid'] = student_name['fullName']
+
             subject_name = Subject.objects.filter(
                 subjectID=info_dict['subjectid'])[0].__dict__
             info_dict['subjectid_'] = subject_name['subjectName']
@@ -84,31 +219,41 @@ def dashboardData(**kwargs):
             faculty__info.append(info_dict)
 
         feedback = {}
-        counter  = {}
+        counter = {}
         for operation in faculty__info:
-            counter[operation['subjectid_']] = Feedback_reply.objects.filter(subjectid=operation['subjectid']).count()
+            counter[operation['subjectid_']] = Feedback_reply.objects.filter(
+                subjectid=operation['subjectid']).count()
             try:
                 if (operation['courseid'] not in feedback):
                     feedback[operation['courseid']] = {}
                 if (operation['subjectid_'] not in feedback[operation['courseid']]):
-                    feedback[operation['courseid']][operation['subjectid_']] = {}
-                
+                    feedback[operation['courseid']
+                             ][operation['subjectid_']] = {}
+
                 if ("rating" not in feedback[operation['courseid']][operation['subjectid_']]):
-                    feedback[operation['courseid']][operation['subjectid_']]['rating'] = 0
+                    feedback[operation['courseid']
+                             ][operation['subjectid_']]['rating'] = 0
 
-                feedback[operation['courseid']][operation['subjectid_']]['rating']  += float(operation['rating'])
-                feedback[operation['courseid']][operation['subjectid_']]['semester']  = operation['semester']
-                feedback[operation['courseid']][operation['subjectid_']]['counter'] = counter[operation['subjectid_']]
+                feedback[operation['courseid']][operation['subjectid_']
+                                                ]['rating'] += float(operation['rating'])
+                feedback[operation['courseid']][operation['subjectid_']
+                                                ]['semester'] = operation['semester']
+                feedback[operation['courseid']][operation['subjectid_']
+                                                ]['student'] = operation['studentid']
+                feedback[operation['courseid']][operation['subjectid_']
+                                                ]['counter'] = counter[operation['subjectid_']]
             except:
-                pass  
+                pass
 
-        for course,subjectdict in feedback.items():
-            for subject,data in subjectdict.items():
-                feedback[course][subject]['rating'] = math.floor((data['rating']/data['counter'])*100)
+        for course, subjectdict in feedback.items():
+            for subject, data in subjectdict.items():
+                feedback[course][subject]['rating'] = round(
+                    (data['rating']/data['counter'])*100,2)
 
-        return {"count": count,"feedback" : feedback}
-    
+        return {"count": count, "feedback": feedback}
+
     return {}
+
 
 def adduser(request):
 
@@ -121,7 +266,8 @@ def adduser(request):
     role = ""
 
     if(request.POST):
-        enrollNo = request.POST['enrollno'] if request.POST['enrollno'] != "" else enroll()
+        enrollNo = request.POST['enrollno'] if request.POST['enrollno'] != "" else enroll(
+        )
         full_name = request.POST['full_nmae']
         email = request.POST['email']
         contact = request.POST['phone']
@@ -263,12 +409,12 @@ def give_feedback(request):
         faculty = request.POST['faculty']
         subjects = request.POST['subjects']
 
-        isGiven = Feedback_reply.objects.filter(studentid=sutedentid, courseid=courseid, semester=semester, facultyid=faculty, subjectid=subjects,rating="")
-
+        isGiven = Feedback_reply.objects.filter(
+            studentid=sutedentid, courseid=courseid, semester=semester, facultyid=faculty, subjectid=subjects, rating="")
 
         if (isGiven.count() <= 0):
             Feedback_reply.objects.create(
-            studentid=sutedentid, courseid=courseid, semester=semester, facultyid=faculty, subjectid=subjects)
+                studentid=sutedentid, courseid=courseid, semester=semester, facultyid=faculty, subjectid=subjects)
 
             id_ = Feedback_reply.objects.latest('id')
 
@@ -277,7 +423,6 @@ def give_feedback(request):
 
         id_ = isGiven[0].__dict__['qformid']
         return redirect(f"/feedback/?setid={id_}&u={faculty}&s={subjects}")
-        
 
     if ('session' in request.session):
         # Permission

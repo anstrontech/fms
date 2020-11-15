@@ -31,5 +31,6 @@ urlpatterns = [
     path('give_feedback/',views.give_feedback,name='give_feedback'),
     path('get_faculty_subject/',views.get_faculty_subject,name='get_faculty_subject'),
     path('feedback/',views.feedback,name='feedback'),
+    path('viewreport/',views.viewreportfaculty,name='viewreportfaculty'),
     path('admin/', admin.site.urls),
 ]

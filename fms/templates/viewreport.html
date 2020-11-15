@@ -1,0 +1,34 @@
+{% extends 'index.html' %} {% load mathfilters %} {% block content %}
+<form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
+    {% csrf_token %}
+    <div class="row justify-start">
+        <div class="col-md-12">
+            <p align="Center">Average <b>{{ average.rating }}</b></p>
+            <table class="table-fixed border" id="datatable">
+                <thead>
+                    <tr>
+                        <th class="w-1/2 px-4 py-2 font-weight-bold">Faculty</th>
+                        <th class="w-1/2 px-4 py-2 font-weight-bold">Course</th>
+                        <th class="w-1/2 px-4 py-2 font-weight-bold">Semster</th>
+                        <th class="w-1/4 px-4 py-2 font-weight-bold">Subject</th>
+                        <th class="w-1/4 px-4 py-2 font-weight-bold">Student</th>
+                        <th class="w-1/4 px-4 py-2 font-weight-bold">Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for faculty in faculty %}
+                    <tr>
+                        <td class="border px-4 py-2">{{ faculty.facultyid_ }}</td>
+                        <td class="border px-4 py-2">{{ faculty.courseid }}</td>
+                        <td class="border px-4 py-2">{{ faculty.semester }}</td>
+                        <td class="border px-4 py-2">{{ faculty.subjectid_ }}</td>
+                        <td class="border px-4 py-2">{{ faculty.studentid }}</td>
+                        <td class="border px-4 py-2">{{ faculty.rating }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+{% endblock %}
