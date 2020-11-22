@@ -16,8 +16,9 @@
 </div>
 <div class="row justify-start">
     <div class="col-md-12">
-        <table class="table-fixed border" id="datatable">
+        <table class="table-fixed border w-100" id="datatable">
             <thead>
+                {% if request.session.session.role == "a" or request.session.session.role == "f" %}
                 <tr>
                     {% if request.session.session.role == "a" %}
                     <th class="w-1/2 px-4 py-2 font-weight-bold">Faculty</th>
@@ -29,9 +30,16 @@
                     <th class="w-1/4 px-4 py-2 font-weight-bold">Positive</th>
                     <th class="w-1/4 px-4 py-2 font-weight-bold">Negative</th>
                 </tr>
+                {% else %}
+                <tr>
+                    <th class="w-1/2 px-4 py-2 font-weight-bold">Faculty</th>
+                    <th class="w-1/4 px-4 py-2 font-weight-bold">Subject</th>
+                    <th class="w-1/4 px-4 py-2 font-weight-bold">Score</th>
+                </tr>
+                {% endif %}
             </thead>
             <tbody>
-                {% for course,subject in feedback.items %} {% for sub,data in subject.items %}
+                {% if request.session.session.role == "a" or request.session.session.role == "f" %} {% for course,subject in feedback.items %} {% for sub,data in subject.items %}
                 <tr>
                     {% if request.session.session.role == "a" %}
                     <td class="border px-4 py-2"><a href="/viewreport/?faculty={{ data.facultyid }}&subject={{data.subjectid}}">{{ data.faculty }} </a></td>
@@ -43,7 +51,14 @@
                     <td class="border px-4 py-2 bg-info text-white font-weight-bold">{{ data.rating }} %</td>
                     <td class="border px-4 py-2 bg-danger text-white font-weight-bold">{{ 100|sub:data.rating }} %</td>
                 </tr>
-                {% endfor %} {% endfor %}
+                {% endfor %} {% endfor %} {% else %} {% for data in feedback %}
+                <tr>
+                    <td class="border px-4 py-2">{{ data.facultyid }}</td>
+                    <td class="border px-4 py-2">{{ data.subjectid_ }}</td>
+                    <td class="border px-4 py-2">{{ data.rating }}</td>
+                </tr>
+                {% endfor %} {% endif %}
+
             </tbody>
         </table>
     </div>

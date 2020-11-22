@@ -33,8 +33,7 @@
                             <td class="border px-4 py-2">{{ c_r.courseID }}</td>
                             <td class="border px-4 py-2">{{ c_r.courseName }}</td>
                             <td class="border px-4 py-2 text-center">
-                                <a class="bg-blue-900 hover:bg-blue-700 btn-sm text-white font-bold rounded-0 mr-1 focus:outline-none focus:shadow-outline"><i class="fa fa-edit"></i></a>
-                                <a class="bg-red-900 hover:bg-red-700 btn-sm text-white font-bold rounded-0 mr-1 focus:outline-none focus:shadow-outline"><i class="fa fa-trash"></i></a>
+                                <a href="?courseid={{ c_r.courseID }}" class="bg-red-900 hover:bg-red-700 btn-sm text-white font-bold rounded-0 mr-1 focus:outline-none focus:shadow-outline"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>
                         {% endfor %}

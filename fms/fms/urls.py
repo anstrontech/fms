@@ -32,5 +32,6 @@ urlpatterns = [
     path('get_faculty_subject/',views.get_faculty_subject,name='get_faculty_subject'),
     path('feedback/',views.feedback,name='feedback'),
     path('viewreport/',views.viewreportfaculty,name='viewreportfaculty'),
+    path('userprofile/',views.userprofile,name='userprofile'),
     path('admin/', admin.site.urls),
 ]

@@ -24,10 +24,67 @@
         {% if request.session.session.id %}
 
         <div class="">
-            <a class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{{ request.session.session.fullName }}</a>
+            <a data-toggle="modal" data-target="#exampleModalScrollable" class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{{ request.session.session.fullName }}</a>
             <a href="/logout/" class="bg-red-900 btn-sm text-white focus:outline-none focus:shadow-outline btn-danger" type="submit">
                 Logout
             </a>
+            <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalScrollableTitle">Profile Information</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="/userprofile/" class="bg-white rounded px-8 pt-6 pb-8 mb-4">
+                                {% csrf_token %}
+                                <div class="mb-4">
+                                    <label class="block text-blue-900 text-sm font-bold mb-2" for="enrollno">
+                                        Enrollment No
+                                    </label>
+                                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-blue-900 leading-tight focus:outline-none focus:shadow-outline" id="enrollno" type="text" name="enrollno" placeholder="Enrollment No" disabled value="{{ request.session.session.enrollNo }}">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-blue-900 text-sm font-bold mb-2" for="enrollno">
+                                        Name
+                                    </label>
+                                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-blue-900 leading-tight focus:outline-none focus:shadow-outline" id="enrollno" type="text" name="name" placeholder="Name" disabled value="{{ request.session.session.fullName }}">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-blue-900 text-sm font-bold mb-2" for="enrollno">
+                                        Email
+                                    </label>
+                                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-blue-900 leading-tight focus:outline-none focus:shadow-outline" id="enrollno" type="text" name="email" placeholder="Email" value="{{ request.session.session.emailID }}">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-blue-900 text-sm font-bold mb-2" for="enrollno">
+                                        Contact
+                                    </label>
+                                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-blue-900 leading-tight focus:outline-none focus:shadow-outline" id="enrollno" type="text" name="contact" value="{{ request.session.session.contact }}" placeholder="Contact">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-blue-900 text-sm font-bold mb-2" for="enrollno">
+                                        Course
+                                    </label>
+                                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-blue-900 leading-tight focus:outline-none focus:shadow-outline" id="enrollno" type="text" name="course" disabled value="{{ request.session.session.course }}{% if request.session.session.semester != '' %}-{{ request.session.session.semester }}{% endif %}"
+                                        placeholder="Course">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-blue-900 text-sm font-bold mb-2" for="enrollno">
+                                        Password
+                                    </label>
+                                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-blue-900 leading-tight focus:outline-none focus:shadow-outline" id="enrollno" type="password" name="password" value="{{ request.session.session.password }}" placeholder="Password">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         {% endif %}
     </nav>

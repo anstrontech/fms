@@ -68,7 +68,7 @@ def viewreportfaculty(request):
         course_name = Course.objects.filter(
             courseID=info_dict['courseid'])[0].__dict__
         info_dict['courseid'] = course_name['courseName']
-        info_dict['rating'] = round(float(info_dict['rating']),2)
+        info_dict['rating'] = round(float(info_dict['rating']), 2)
 
         faculty__info.append(info_dict)
 
@@ -102,15 +102,15 @@ def viewreportfaculty(request):
                                             ]['counter'] = counter[operation['subjectid_']]
         except:
             pass
-        
+
     rattin = {}
     for course, subjectdict in feedback.items():
         for subject, data in subjectdict.items():
             rattin['rating'] = round(
-                (data['rating']/data['counter'])*100,2)
+                (data['rating']/data['counter'])*100, 2)
 
     print(rattin)
-    return render(request, 'viewreport.html', {'faculty':faculty__info,'average':rattin})
+    return render(request, 'viewreport.html', {'faculty': faculty__info, 'average': rattin})
 
 
 def dashboardData(**kwargs):
@@ -180,7 +180,7 @@ def dashboardData(**kwargs):
         for course, subjectdict in feedback.items():
             for subject, data in subjectdict.items():
                 feedback[course][subject]['rating'] = round(
-                    (data['rating']/data['counter'])*100,2)
+                    (data['rating']/data['counter'])*100, 2)
 
         print(feedback)
         return {"count": count, "feedback": feedback}
@@ -248,9 +248,34 @@ def dashboardData(**kwargs):
         for course, subjectdict in feedback.items():
             for subject, data in subjectdict.items():
                 feedback[course][subject]['rating'] = round(
-                    (data['rating']/data['counter'])*100,2)
+                    (data['rating']/data['counter'])*100, 2)
 
         return {"count": count, "feedback": feedback}
+    else:
+        stu_info = Feedback_reply.objects.filter(studentid=kwargs['id_'])
+        faculty__info = []
+        for faculty in stu_info:
+            info_dict = faculty.__dict__
+
+            faculty_name = User.objects.filter(
+                userid=info_dict['facultyid'])[0].__dict__
+            info_dict['facultyid'] = faculty_name['fullName']
+
+            student_name = User.objects.filter(
+                userid=info_dict['studentid'])[0].__dict__
+            info_dict['studentid'] = student_name['fullName']
+
+            subject_name = Subject.objects.filter(
+                subjectID=info_dict['subjectid'])[0].__dict__
+            info_dict['subjectid_'] = subject_name['subjectName']
+
+            course_name = Course.objects.filter(
+                courseID=info_dict['courseid'])[0].__dict__
+            info_dict['courseid'] = course_name['courseName']
+            info_dict['rating'] = float(info_dict['rating'])*100
+            faculty__info.append(info_dict)
+
+        return {'feedback': faculty__info}
 
     return {}
 
@@ -311,6 +336,11 @@ def adduser(request):
 
 
 def viewuser(request):
+
+    if('userid' in request.GET):
+        User.objects.filter(userid=request.GET['userid']).delete()
+        return redirect("/viewuser/")
+
     if ('session' in request.session):
         return render(request, "viewuser.html", {'users': [u_s.__dict__ for u_s in User.objects.exclude(userid=request.session['session']['userid'])]})
     else:
@@ -320,6 +350,9 @@ def viewuser(request):
 
 
 def viewaddcourse(request):
+    if('courseid' in request.GET):
+        Course.objects.filter(courseID=request.GET['courseid']).delete()
+        return redirect("/course/")
     if(request.POST):
         Course.objects.create(courseName=request.POST['coursenaem'])
         return redirect("/course/")
@@ -332,6 +365,11 @@ def viewaddcourse(request):
 
 
 def addviewsubject(request):
+
+    if('subid' in request.GET):
+        Subject.objects.filter(subjectID=request.GET['subid']).delete()
+        return redirect("/subject/")
+
     if(request.POST):
         Subject.objects.create(subjectName=request.POST['subjectnaem'])
         return redirect("/subject/")
@@ -344,6 +382,9 @@ def addviewsubject(request):
 
 
 def viewaddfacultysubject(request):
+    if('id' in request.GET):
+        Faculty_subject.objects.filter(id=request.GET['id']).delete()
+        return redirect("/faculty_subject/")
 
     if(request.POST):
         Faculty_subject.objects.create(faculty=",".join(request.POST.getlist(
@@ -355,15 +396,19 @@ def viewaddfacultysubject(request):
         faculty = [u_r.__dict__ for u_r in User.objects.filter(role='f')]
         semesters = dict(semester())
         subjects = [s_s.__dict__ for s_s in Subject.objects.all()]
-        faculty_subject = [
-            f_s.__dict__ for f_s in Faculty_subject.objects.all()]
-
+        faculty_subject = []
+        for f_s in Faculty_subject.objects.all():
+            faculty_subjetc = f_s.__dict__
+            faculty_subject.append(faculty_subjetc)
         return render(request, "faculty_subject.html", {'faculty': faculty, 'course': courses, 'semester': semesters, 'subject': subjects, 'faculty_subject': faculty_subject})
     else:
         return render(request, "login.html", {'title': 'Login'})
 
 
 def viewaddcoursesubject(request):
+    if('id' in request.GET):
+        Course_subject.objects.filter(id=request.GET['id']).delete()
+        return redirect("/course_subject/")
     if(request.POST):
         Course_subject.objects.create(course=request.POST['course'], semester=request.POST['semester'], subjectName=",".join(
             request.POST.getlist('subjects')))
@@ -383,6 +428,9 @@ def viewaddcoursesubject(request):
 
 
 def viewaddfeedbackqus(request):
+    if('qid' in request.GET):
+        Question.objects.filter(questionid=request.GET['qid']).delete()
+        return redirect("/feedback_qus")
     if(request.POST):
         qs = Question.objects.filter(question=request.POST['quesiton'])
         if (len(qs) > 0):
@@ -501,6 +549,22 @@ def get_faculty_subject(request):
         return JsonResponse(reponse, safe=False)
     except:
         pass
+
+
+
+def userprofile(request):
+    if(request.POST):
+        email       = request.POST['email']
+        contact     = request.POST['contact']
+        password    = request.POST['password']
+        
+        User.objects.filter(userid=request.session['session']['userid']).update(emailID=email,password=password,contact=contact)
+
+        request.session['session']['emailID']  = email
+        request.session['session']['password'] = password
+        request.session['session']['contact']  = contact
+
+        return redirect("/")
 
 # LOGOUT SESSIOn
 
